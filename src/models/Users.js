@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
+import crypto from "crypto"
 
 const UserSchema = new Schema({
   name: {
@@ -76,6 +77,21 @@ UserSchema.pre("save", async function (next) {
 
 UserSchema.methods.comparePassword = async function (enterPassword) {
   return await bcrypt.compare(enterPassword, this.password)
+}
+
+UserSchema.methods.generateVerificationCode = function () {
+  // function generateRandomFiveDigitNumber() {
+  //   const firstDigit = Math.floor(Math.random() * 9) + 1
+  //   const remainingDigit = Math.floor(Math.random() * 10000).toString().padStart(4, 0)
+
+  //   return parseInt(firstDigit + remainingDigit)
+  // }
+  // const verificationCode = generateRandomFiveDigitNumber();
+  const verificationCode = crypto.randomInt(10000, 99999)
+  this.verificationCode = verificationCode
+  this.verificationCodeExpire = Date.now() + 5 * 60 * 1000
+
+  return verificationCode
 }
 
 const User = mongoose.models.Users || mongoose.model("Users", UserSchema)
