@@ -3,6 +3,8 @@ import { config } from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors"
 import { dbConnection } from "./src/database/db.js";
+import { errorMiddleware } from "./src/middlewares/error.js";
+import morganMiddleware from "./src/middlewares/morganLogger.js";
 
 export const app = e();
 config({ path: "./config.env" });
@@ -12,7 +14,11 @@ app.use(cors({
   credentials: true
 }));
 app.use(cookieParser());
+// Middleware
 app.use(e.json());
+app.use(morganMiddleware); // log HTTP requests
 app.use(e.urlencoded({ extended: true }));
 
 dbConnection();
+
+app.use(errorMiddleware)
