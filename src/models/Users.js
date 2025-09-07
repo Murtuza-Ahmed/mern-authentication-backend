@@ -21,18 +21,18 @@ const UserSchema = new Schema({
     type: String,
     required: [true, "Password is required"],
     minlength: [8, "Password must be at least 8 characters long"],
-    match: [
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      "Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character"
-    ]
+    // match: [
+    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    //   "Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character"
+    // ]
   },
   phone: {
     type: String,
     unique: true,
-    match: [
-      /^(\+92|0)?3\d{9}$/,
-      "Please enter a valid Pakistani phone number"
-    ]
+    // match: [
+    //   /^(\+92|0)?3\d{9}$/,
+    //   "Please enter a valid Pakistani phone number"
+    // ]
   },
   accountVerified: {
     type: Boolean,
