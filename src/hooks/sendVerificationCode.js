@@ -1,7 +1,8 @@
 import twilio from "twilio";
-import { generateEmailTemplate } from "./emailTemplate"
-import { sendEmail } from "./sendEmail"
-import ErrorHandler from "../utils/errorHandler";
+import { generateEmailTemplate } from "./emailTemplate.js"
+import { sendEmail } from "./sendEmail.js"
+import ErrorHandler from "../utils/errorHandler.js";
+import { HTTP_STATUS } from "../utils/statusCodes.js";
 
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
 

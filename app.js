@@ -5,6 +5,7 @@ import cors from "cors"
 import { dbConnection } from "./src/database/db.js";
 import { errorMiddleware } from "./src/middlewares/error.js";
 import morganMiddleware from "./src/middlewares/morganLogger.js";
+import userRouter from "./src/routes/userRoutes.js"
 
 export const app = e();
 config({ path: "./config.env" });
@@ -18,6 +19,8 @@ app.use(cookieParser());
 app.use(e.json());
 app.use(morganMiddleware); // log HTTP requests
 app.use(e.urlencoded({ extended: true }));
+
+app.use("/api", userRouter)
 
 dbConnection();
 
