@@ -15,25 +15,16 @@ const UserSchema = new Schema({
     required: [true, "Email is required"],
     unique: true,
     lowercase: true,
-    trim: true,
-    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, "Please enter a valid email"]
+    trim: true
   },
   password: {
     type: String,
     required: [true, "Password is required"],
-    minlength: [8, "Password must be at least 8 characters long"],
-    // match: [
-    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-    //   "Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character"
-    // ]
+    minlength: [8, "Password must be at least 8 characters long"]
   },
   phone: {
     type: String,
-    unique: true,
-    // match: [
-    //   /^(\+92|0)?3\d{9}$/,
-    //   "Please enter a valid Pakistani phone number"
-    // ]
+    unique: true
   },
   accountVerified: {
     type: Boolean,
@@ -80,13 +71,6 @@ UserSchema.methods.comparePassword = async function (enterPassword) {
 }
 
 UserSchema.methods.generateVerificationCode = function () {
-  // function generateRandomFiveDigitNumber() {
-  //   const firstDigit = Math.floor(Math.random() * 9) + 1
-  //   const remainingDigit = Math.floor(Math.random() * 10000).toString().padStart(4, 0)
-
-  //   return parseInt(firstDigit + remainingDigit)
-  // }
-  // const verificationCode = generateRandomFiveDigitNumber();
   const verificationCode = crypto.randomInt(10000, 99999)
   this.verificationCode = verificationCode
   this.verificationCodeExpire = Date.now() + 5 * 60 * 1000
