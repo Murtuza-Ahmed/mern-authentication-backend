@@ -5,18 +5,19 @@ export const sendEmail = async ({ email, subject, message }) => {
     host: process.env.SMTP_HOST,
     service: process.env.SMTP_SERVICE,
     port: process.env.SMTP_PORT,
+    secure: false,
     auth: {
       user: process.env.SMTP_MAIL,
       pass: process.env.SMTP_PASSWORD
     }
   });
 
-  const options = {
-    from: process.env.SMTP_MAIL,
+  const mailOptions = {
+    from: `"MERN Auth System" <no-reply@murtuza.com>`,
     to: email,
     subject,
     html: message
   }
 
-  await transporter.sendMail(options)
+  await transporter.sendMail(mailOptions)
 }

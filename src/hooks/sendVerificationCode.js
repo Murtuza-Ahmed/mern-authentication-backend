@@ -11,9 +11,9 @@ export async function sendVerificationCode(verificationMethod, verificationCode,
   try {
     if (verificationMethod === "email") {
       const message = generateEmailTemplate(verificationCode)
-      sendEmail({ email, subject: "Your Verification Code", message })
+      sendEmail({ email, subject: "Your Verification Code ✔", message })
     } else if (verificationMethod === "phone") {
-      const verificationCodeWithSpace = verificationCode.toString().split("").join(" ")
+      const verificationCodeWithSpace = verificationCode.toString().split("").join(" ");
       await client.calls.create({
         twiml: `<Response>
       <Say>
