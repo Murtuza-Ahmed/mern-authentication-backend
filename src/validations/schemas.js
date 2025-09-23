@@ -40,6 +40,15 @@ export const verifyValidation = Joi.object({
   })
 })
 
+export const loginValidation = Joi.object({
+  emailOrPhone: Joi.string().required().messages({
+    "string.empty": "Email or phone is required"
+  }),
+  password: Joi.string().required().messages({
+    "string.empty": "Password is required"
+  })
+})
+
 // register with otp validation
 // export const registerWithOtpValidation = Joi.object({
 //   name: Joi.string().min(3).max(50).required().messages({
