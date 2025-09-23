@@ -42,7 +42,8 @@ const UserSchema = new Schema({
   },
   resetPasswordExpire: {
     type: Date
-  }
+  },
+  refreshToken: { type: String }
 },
   {
     timestamps: true,
