@@ -7,8 +7,6 @@ export const logout = asyncHandler(async (req, res, next) => {
 
   const { userId } = req.user;
 
-  console.log("Logging out user:", userId);
-
   const user = await User.findById(userId);
   if (user) {
     user.refreshToken = null;

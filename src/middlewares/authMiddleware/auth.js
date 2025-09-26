@@ -1,7 +1,7 @@
 import { asyncHandler } from "../asyncHandler.js";
 import ErrorHandler from "../../utils/errorHandler.js";
 import { HTTP_STATUS } from "../../utils/statusCodes.js";
-import { decodeToken, verifyToken } from "../../utils/jwt.js";
+import { verifyAccessToken } from "../../utils/jwt.js";
 
 export const isAuthenticated = asyncHandler(async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -11,11 +11,12 @@ export const isAuthenticated = asyncHandler(async (req, res, next) => {
   }
 
   const token = authHeader.split(" ")[1];
-  const decode = decodeToken(token)
-  const verify = verifyToken(token)
-  console.log("Decode:", decode)
-  console.log("Token:", token);
-  console.log("verify token:", verify);
+  const decoded = verifyAccessToken(token);
 
-  return
+  if (!decoded) {
+    return next(new ErrorHandler("Invalid or expired token", HTTP_STATUS.UNAUTHORIZED))
+  }
+
+  req.user = decoded
+  next()
 })

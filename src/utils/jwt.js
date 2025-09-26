@@ -19,7 +19,7 @@ export const generateAccessToken = (user) => {
     email: user.email,
   }
 
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '15m' })
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: process.env.JWT_SECRET_EXPIRES_IN })
 }
 
 // Refresh Token
@@ -29,13 +29,22 @@ export const generateRefreshToken = (user) => {
     email: user.email,
   }
 
-  return jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: '7d' })
+  return jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: process.env.JWT_REFRESH_SECRET_EXPIRES_IN })
 }
 
-// Verify Token
-export const verifyToken = (token) => {
+// Verify Access Token
+export const verifyAccessToken = (token) => {
   try {
-    console.log("Verifying token:", token)
+    return jwt.verify(token, JWT_SECRET)
+  } catch (error) {
+    logger.info("Token verification failed:", error)
+    return null
+  }
+}
+
+// Verify Refresh Token 
+export const verifyRefreshToken = (token) => {
+  try {
     return jwt.verify(token, JWT_REFRESH_SECRET)
   } catch (error) {
     logger.error("Token verification failed:", error)
