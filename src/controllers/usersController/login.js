@@ -60,6 +60,7 @@ export const login = asyncHandler(async (req, res, next) => {
     accessToken,
     refreshToken,
     user: {
+      userId: user._id,
       email: user.email,
       name: user.name,
       phone: user.phone,
