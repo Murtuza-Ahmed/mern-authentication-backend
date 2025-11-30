@@ -1,5 +1,5 @@
 import morgan from "morgan";
-import logger from "../utils/logger.js";
+import logger from "#utils/logger.js";
 
 // Morgan setup with Pino stream
 const morganMiddleware = morgan("tiny", {

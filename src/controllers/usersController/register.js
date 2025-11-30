@@ -1,9 +1,9 @@
-import User from "../../models/Users.js";
+import User from "#models/Users.js";
 import { registerValidation } from "../../validations/schemas.js";
-import { asyncHandler } from "../../middlewares/asyncHandler.js";
-import ErrorHandler from "../../utils/errorHandler.js";
-import { HTTP_STATUS } from "../../utils/statusCodes.js";
-import { sendVerificationCode } from "../../hooks/sendVerificationCode.js";
+import { asyncHandler } from "#middlewares/asyncHandler.js";
+import ErrorHandler from "#utils/errorHandler.js";
+import { HTTP_STATUS } from "#utils/statusCodes.js";
+import { sendVerificationCode } from "#hooks/sendVerificationCode.js";
 
 
 export const register = asyncHandler(async (req, res, next) => {

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { asyncHandler } from "../../middlewares/asyncHandler.js";
-import { HTTP_STATUS } from "../../utils/statusCodes.js";
+import { asyncHandler } from "#middlewares/asyncHandler.js";
+import { HTTP_STATUS } from "#utils/statusCodes.js";
 
 export const logout = asyncHandler(async (req, res, next) => {
   const User = mongoose.model("Users");

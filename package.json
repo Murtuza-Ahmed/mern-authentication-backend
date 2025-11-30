@@ -20,6 +20,7 @@
     "express": "^5.1.0",
     "joi": "^18.0.1",
     "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.3",
     "mongoose": "^8.18.0",
     "morgan": "^1.10.1",
     "nodemailer": "^7.0.6",
@@ -33,5 +34,12 @@
     "eslint-plugin-prettier": "^5.5.4",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2"
+  },
+  "imports": {
+    "#utils/*": "./src/utils/*",
+    "#models/*": "./src/models/*",
+    "#controller/*": "./src/controllers/*",
+    "#middlewares/*": "./src/middlewares/*",
+    "#hooks/*": "./src/hooks/*"
   }
 }

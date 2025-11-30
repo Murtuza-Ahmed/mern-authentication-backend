@@ -1,7 +1,7 @@
-import { asyncHandler } from "../../middlewares/asyncHandler.js";
+import { asyncHandler } from "#middlewares/asyncHandler.js";
 import mongoose from "mongoose";
-import ErrorHandler from "../../utils/errorHandler.js";
-import { HTTP_STATUS } from "../../utils/statusCodes.js";
+import ErrorHandler from "#utils/errorHandler.js";
+import { HTTP_STATUS } from "#utils/statusCodes.js";
 import { generateAccessToken, generateRefreshToken, hashToken } from "../../utils/jwt.js";
 import { loginValidation } from "../../validations/schemas.js";
 
