@@ -1,7 +1,7 @@
-import { asyncHandler } from "../../middlewares/asyncHandler.js";
-import User from "../../models/Users.js";
-import ErrorHandler from "../../utils/errorHandler.js";
-import { HTTP_STATUS } from "../../utils/statusCodes.js";
+import { asyncHandler } from "#middlewares/asyncHandler.js";
+import User from "#models/Users.js";
+import ErrorHandler from "#utils/errorHandler.js";
+import { HTTP_STATUS } from "#utils/statusCodes.js";
 import { verifyValidation } from "../../validations/schemas.js";
 
 export const verifyAccount = asyncHandler(async (req, res, next) => {

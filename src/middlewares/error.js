@@ -1,5 +1,5 @@
-import ErrorHandler from "../utils/errorHandler.js"
-import { HTTP_STATUS } from "../utils/statusCodes.js"
+import ErrorHandler from "#utils/errorHandler.js"
+import { HTTP_STATUS } from "#utils/statusCodes.js"
 
 export const errorMiddleware = (err, req, res, next) => {
   err.statusCode = err.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR

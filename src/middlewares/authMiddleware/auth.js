@@ -1,7 +1,7 @@
-import { asyncHandler } from "../asyncHandler.js";
-import ErrorHandler from "../../utils/errorHandler.js";
-import { HTTP_STATUS } from "../../utils/statusCodes.js";
-import { verifyAccessToken } from "../../utils/jwt.js";
+import { asyncHandler } from "#middlewares/asyncHandler.js";
+import ErrorHandler from "#utils/errorHandler.js";
+import { HTTP_STATUS } from "#utils/statusCodes.js";
+import { verifyAccessToken } from "#utils/jwt.js";
 
 export const isAuthenticated = asyncHandler(async (req, res, next) => {
   const authHeader = req.headers.authorization;
