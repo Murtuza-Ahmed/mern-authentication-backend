@@ -2,7 +2,10 @@ import { asyncHandler } from "#middlewares/asyncHandler.js";
 import mongoose from "mongoose";
 import ErrorHandler from "#utils/errorHandler.js";
 import { HTTP_STATUS } from "#utils/statusCodes.js";
-import { generateAccessToken, generateRefreshToken, hashToken } from "../../utils/jwt.js";
+import {
+  generateAccessToken,
+  generateRefreshToken
+} from "#utils/jwt.js";
 import { loginValidation } from "../../validations/schemas.js";
 
 export const login = asyncHandler(async (req, res, next) => {
@@ -43,9 +46,10 @@ export const login = asyncHandler(async (req, res, next) => {
   }
 
   const accessToken = generateAccessToken(user);
-  const refreshToken = generateRefreshToken(user);
+  const refreshToken = generateRefreshToken(user)
 
-  user.refreshToken = hashToken(refreshToken);
+  // user.accessToken = accessToken;
+  user.refreshToken = refreshToken;
 
   await user.save({ validateModifiedOnly: true });
 
@@ -57,13 +61,8 @@ export const login = asyncHandler(async (req, res, next) => {
   }).json({
     success: true,
     message: "Login successful",
-    accessToken,
     refreshToken,
-    user: {
-      userId: user._id,
-      email: user.email,
-      name: user.name,
-      phone: user.phone,
-    }
+    accessToken,
+    user
   })
 })
