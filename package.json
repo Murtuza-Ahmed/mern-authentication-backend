@@ -29,6 +29,7 @@
     "twilio": "^5.9.0"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
     "eslint": "^9.35.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
@@ -38,7 +39,7 @@
   "imports": {
     "#utils/*": "./src/utils/*",
     "#models/*": "./src/models/*",
-    "#controller/*": "./src/controllers/*",
+    "#controllers/*": "./src/controllers/*",
     "#middlewares/*": "./src/middlewares/*",
     "#hooks/*": "./src/hooks/*"
   }

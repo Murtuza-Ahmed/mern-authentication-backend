@@ -8,10 +8,16 @@ export const logout = asyncHandler(async (req, res, next) => {
   const { userId } = req.user;
 
   const user = await User.findById(userId);
-  if (user) {
-    user.refreshToken = null;
-    await user.save({ validateModifiedOnly: true });
+  if (!user || !user.refreshToken) {
+    return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+      success: false,
+      message: "User already logged out or token invalid",
+    });
   }
+
+  user.refreshToken = null;
+  await user.save({ validateModifiedOnly: true });
+
   return res.status(HTTP_STATUS.OK).clearCookie("refreshToken", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
