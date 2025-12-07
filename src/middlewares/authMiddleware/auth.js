@@ -30,7 +30,7 @@ export const isAuthenticated = asyncHandler(async (req, res, next) => {
     }
 
     // Check DB for refresh token match
-    const user = await User.findById(decoded.userId).select("refreshToken");
+    const user = await User.findById(decoded.userId);
     if (!user || user.refreshToken !== token) {
       return next(new ErrorHandler("Unauthorized: Token mismatch", HTTP_STATUS.UNAUTHORIZED));
     }
@@ -43,7 +43,7 @@ export const isAuthenticated = asyncHandler(async (req, res, next) => {
   req.user = decoded
 
   // ***Important Fix Here***
-  const user = await User.findById(decoded.userId).select("refreshToken");
+  const user = await User.findById(decoded.userId);
   if (!user || !user.refreshToken) {
     return next(new ErrorHandler("Unauthorized: Logged out", HTTP_STATUS.UNAUTHORIZED));
   }
