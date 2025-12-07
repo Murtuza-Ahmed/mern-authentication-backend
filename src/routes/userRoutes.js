@@ -15,7 +15,7 @@ const router = e.Router();
 router.post("/register", register);
 router.post("/verify-account", verifyAccount);
 router.post("/login", login);
-router.post("/logout", isAuthenticated, logout);
+router.get("/logout", isAuthenticated, logout);
 router.get("/me", isAuthenticated, getUser);
 router.post("/password/forgot", forgotPassword);
 router.put("/password/reset/:token", resetPassword);
