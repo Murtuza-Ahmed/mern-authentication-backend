@@ -5,7 +5,7 @@ import { HTTP_STATUS } from "#utils/statusCodes.js";
 export const getUser = asyncHandler(async (req, res, next) => {
   const user = req.user;
 
-  const userData = await User.findById(user.userId).select("-password")
+  const userData = await User.findById(user._id).select("-password")
 
   if (!userData) {
     return res.status(HTTP_STATUS.NOT_FOUND).json({

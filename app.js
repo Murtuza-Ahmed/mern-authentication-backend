@@ -20,7 +20,7 @@ app.use(e.json());
 app.use(morganMiddleware); // log HTTP requests
 app.use(e.urlencoded({ extended: true }));
 
-app.use("/api", userRouter)
+app.use("/api/v1", userRouter)
 
 dbConnection();
 
