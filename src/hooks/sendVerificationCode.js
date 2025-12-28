@@ -9,10 +9,16 @@ const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TO
 
 export async function sendVerificationCode(verificationMethod, verificationCode, email, phone) {
   try {
+    // Email Verification
     if (verificationMethod === "email") {
       const message = generateEmailTemplate(verificationCode)
-      sendEmail({ email, subject: "Your Verification Code ✔", message })
-    } else if (verificationMethod === "phone") {
+      const result = await sendEmail({ email, subject: "Your Verification Code ✔", message })
+      if (!result.success) {
+        return { success: false, message: "Email sending failed" };
+      }
+    }
+    // Phone Verification 
+    else if (verificationMethod === "phone") {
       const verificationCodeWithSpace = verificationCode.toString().split("").join(" ");
       await client.calls.create({
         twiml: `<Response>
@@ -27,6 +33,7 @@ export async function sendVerificationCode(verificationMethod, verificationCode,
     } else {
       throw new ErrorHandler("Invalid Verification method", HTTP_STATUS.INTERNAL_SERVER_ERROR)
     }
+    return { success: true }
   } catch (error) {
     throw error
   }

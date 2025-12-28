@@ -27,7 +27,17 @@ export const register = asyncHandler(async (req, res, next) => {
     } else {
       const newCode = await user.generateVerificationCode();
       await user.save();
-      await sendVerificationCode(verificationMethod, newCode, email, phone);
+      const verificationResult = await sendVerificationCode(verificationMethod, newCode, email, phone);
+
+      if (!verificationResult.success) {
+        return next(
+          new ErrorHandler(
+            "Unable to send verification code. Please try again.",
+            HTTP_STATUS.BAD_REQUEST
+          )
+        );
+      }
+
       return res.status(HTTP_STATUS.OK).json({
         success: true,
         message: email ?
@@ -71,7 +81,16 @@ export const register = asyncHandler(async (req, res, next) => {
 
   const verificationCode = await user.generateVerificationCode()
   await user.save()
-  await sendVerificationCode(verificationMethod, verificationCode, email, phone)
+  const verificationResult = await sendVerificationCode(verificationMethod, verificationCode, email, phone)
+
+  if (!verificationResult.success) {
+    return next(
+      new ErrorHandler(
+        "Unable to send verification code. Please try again.",
+        HTTP_STATUS.BAD_REQUEST
+      )
+    );
+  }
 
   return res.status(HTTP_STATUS.CREATED).json({
     success: true,
