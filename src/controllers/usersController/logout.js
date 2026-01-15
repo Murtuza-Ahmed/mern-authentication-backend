@@ -5,9 +5,9 @@ import { HTTP_STATUS } from "#utils/statusCodes.js";
 export const logout = asyncHandler(async (req, res, next) => {
   const User = mongoose.model("Users");
 
-  const { userId } = req.user;
+  const { _id } = req.user;
 
-  const user = await User.findById(userId);
+  const user = await User.findById(_id);
   if (!user || !user.refreshToken) {
     return res.status(HTTP_STATUS.UNAUTHORIZED).json({
       success: false,
@@ -21,7 +21,7 @@ export const logout = asyncHandler(async (req, res, next) => {
   return res.status(HTTP_STATUS.OK).clearCookie("refreshToken", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "Strict",
+    sameSite: "Lax",
   }).json({
     success: true,
     message: "Logout successful",

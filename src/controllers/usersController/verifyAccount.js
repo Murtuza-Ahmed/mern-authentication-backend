@@ -1,7 +1,7 @@
 import { asyncHandler } from "#middlewares/asyncHandler.js";
 import User from "#models/Users.js";
 import ErrorHandler from "#utils/errorHandler.js";
-// import { sendToken } from "#utils/sendToken.js";
+import { sendToken } from "#utils/sendToken.js";
 import { HTTP_STATUS } from "#utils/statusCodes.js";
 import { verifyValidation } from "../../validations/schemas.js";
 
@@ -30,9 +30,5 @@ export const verifyAccount = asyncHandler(async (req, res, next) => {
   user.verificationCode = undefined;
   user.verificationCodeExpire = undefined;
   await user.save({ validateModifiedOnly: true });
-  // sendToken(user, res)
-  return res.status(HTTP_STATUS.OK).json({
-    success: true,
-    message: "Account verified successfully. You can now log in."
-  });
+  return sendToken(user, res);
 }) 
