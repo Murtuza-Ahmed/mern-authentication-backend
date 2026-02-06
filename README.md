@@ -31,3 +31,5 @@ JWT (JSON Web Token) – Authentication
 🚀 Usage
 
 This backend can be integrated with any React frontend or other client applications for secure authentication and authorization workflows.
+
+Copy .env.example to .env and update values
