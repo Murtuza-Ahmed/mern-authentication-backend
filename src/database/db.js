@@ -11,7 +11,12 @@ export const dbConnection = async () => {
 
     logger.info(`✅ MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    logger.error("❌ Error while connecting to MongoDB:", error.message);
+    logger.error("❌ Error while connecting to MongoDB:", {
+      name: error.name,
+      message: error.message,
+      code: error.code,
+    });
+    throw error; // Rethrow the error to be handled by the caller
     process.exit(1);
   }
 
