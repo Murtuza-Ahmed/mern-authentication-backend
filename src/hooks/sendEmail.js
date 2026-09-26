@@ -19,9 +19,16 @@ export const sendEmail = async ({ email, subject, message }) => {
 
     return { success: true };
   } catch (error) {
+    console.error("❌ Email sending failed:", {
+      name: error?.name,
+      message: error?.message,
+      code: error?.code,
+      command: error?.command,
+      responseCode: error?.responseCode,
+    });
     return {
       success: false,
-      message: "Invalid email or email service error",
+      message: error?.message || "Invalid email or email service error",
     };
   }
 };
