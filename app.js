@@ -9,19 +9,63 @@ import userRouter from "./src/routes/userRoutes.js"
 
 const app = e();
 config({ path: "./config.env" });
-const allowedOrigins = [process.env.FRONTEND_URL];
-app.use(cors({
-  // origin: [process.env.FRONTEND_URL],
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
+const configuredOrigins =
+  process.env.FRONTEND_URLS?.trim() || process.env.FRONTEND_URL?.trim() || "";
+const allowedOrigins = [...new Set(configuredOrigins
+  .split(",")
+  .flatMap((value) => {
+    const trimmedValue = value.trim();
+    if (!trimmedValue) {
+      return [];
     }
-  },
-  methods: ["POST", "GET", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  credentials: true
-}));
+
+    try {
+      const url = new URL(trimmedValue);
+      if (
+        !["http:", "https:"].includes(url.protocol) ||
+        url.username ||
+        url.password ||
+        url.pathname !== "/" ||
+        url.search ||
+        url.hash ||
+        (trimmedValue !== url.origin && trimmedValue !== `${url.origin}/`)
+      ) {
+        return [];
+      }
+
+      return [url.origin];
+    } catch {
+      return [];
+    }
+  }))];
+const isCorsDebugEnabled =
+  process.env.NODE_ENV !== "production" || process.env.CORS_DEBUG === "true";
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      const isAllowed = Boolean(origin && allowedOrigins.includes(origin));
+      if (isCorsDebugEnabled) {
+        console.info("[CORS] Origin check", {
+          origin: origin ?? null,
+          allowedOrigins,
+          allowed: isAllowed,
+        });
+      }
+
+      if (isAllowed) {
+        return callback(null, true);
+      }
+
+      return callback(null, false);
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+    optionsSuccessStatus: 204,
+  })
+);
+
 app.use(cookieParser());
 // Middleware
 app.use(e.json());
