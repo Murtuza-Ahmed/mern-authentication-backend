@@ -49,6 +49,30 @@ export const loginValidation = Joi.object({
   })
 })
 
+// reset-password validation (same strength rules as registration)
+const passwordRule = Joi.string()
+  .min(8)
+  .pattern(
+    new RegExp(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+    )
+  )
+  .required()
+  .messages({
+    "string.min": "Password must be at least 8 characters long",
+    "string.pattern.base":
+      "Password must include uppercase, lowercase, number, and special character",
+    "string.empty": "Password is required"
+  });
+
+export const resetPasswordValidation = Joi.object({
+  password: passwordRule,
+  confirmPassword: Joi.string().required().valid(Joi.ref("password")).messages({
+    "any.only": "Password & confirm-password do not match",
+    "string.empty": "Confirm password is required"
+  })
+});
+
 // register with otp validation
 // export const registerWithOtpValidation = Joi.object({
 //   name: Joi.string().min(3).max(50).required().messages({

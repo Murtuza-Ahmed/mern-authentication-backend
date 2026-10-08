@@ -30,5 +30,5 @@ export const verifyAccount = asyncHandler(async (req, res, next) => {
   user.verificationCode = undefined;
   user.verificationCodeExpire = undefined;
   await user.save({ validateModifiedOnly: true });
-  return sendToken(user, res);
+  return sendToken(user, res, "Account verified successfully");
 }) 

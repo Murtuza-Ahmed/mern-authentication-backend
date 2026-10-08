@@ -6,9 +6,12 @@ import { dbConnection } from "./src/database/db.js";
 import { errorMiddleware } from "./src/middlewares/error.js";
 import morganMiddleware from "./src/middlewares/morganLogger.js";
 import userRouter from "./src/routes/userRoutes.js"
+import logger from "#utils/logger.js";
 
 const app = e();
-config({ path: "./config.env" });
+// Loads `.env` in the project root when present (no-op on hosts like
+// Vercel/Render where env vars come from the dashboard).
+config();
 const configuredOrigins =
   process.env.FRONTEND_URLS?.trim() || process.env.FRONTEND_URL?.trim() || "";
 const allowedOrigins = [...new Set(configuredOrigins
@@ -44,7 +47,9 @@ const isCorsDebugEnabled =
 app.use(
   cors({
     origin: (origin, callback) => {
-      const isAllowed = Boolean(origin && allowedOrigins.includes(origin));
+      // No Origin header = non-browser client (curl, Postman, mobile apps,
+      // server-to-server). Browsers are not subject to CORS anyway here.
+      const isAllowed = !origin || allowedOrigins.includes(origin);
       if (isCorsDebugEnabled) {
         console.info("[CORS] Origin check", {
           origin: origin ?? null,
@@ -74,7 +79,19 @@ app.use(e.urlencoded({ extended: true }));
 
 app.use("/api/v1", userRouter)
 
-dbConnection();
+// Health check (Render healthCheckPath, load balancers, uptime monitors)
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
+// Connect to MongoDB. Not awaited so the serverless handler (Vercel) can be
+// exported immediately; a failed connection fails fast with a clear log.
+dbConnection().catch((error) => {
+  logger.fatal("💥 Could not connect to MongoDB, exiting.", {
+    message: error.message,
+  });
+  process.exit(1);
+});
 
 app.use(errorMiddleware)
 

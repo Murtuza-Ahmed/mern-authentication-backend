@@ -1,13 +1,50 @@
 services:
   - type: web
-    name: authentication-backend
+    name: mern-authentication-backend
     env: node
     plan: free
     branch: main
     buildCommand: npm install
     startCommand: npm run start
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: DB_NAME
+        value: MERN_AUTHENTICATION
+      # Public URL of the frontend (used in password-reset links)
+      - key: FRONTEND_URL
+        sync: false
+      # Comma-separated list of allowed frontend origins for CORS
+      - key: FRONTEND_URLS
+        sync: false
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_ACCESS_SECRET_EXPIRES_IN
+        value: 15m
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET_EXPIRES_IN
+        value: 7d
+      # Email (nodemailer) — for verification codes & reset links
+      - key: SMTP_SERVICE
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_MAIL
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      # Twilio — only needed for phone (voice call) verification
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_PHONE_NUMBER
+        sync: false

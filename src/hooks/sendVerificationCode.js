@@ -4,7 +4,18 @@ import { sendEmail } from "./sendEmail.js"
 import ErrorHandler from "#utils/errorHandler.js";
 import { HTTP_STATUS } from "#utils/statusCodes.js";
 
-const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
+// Lazily create the Twilio client so importing this module never crashes
+// when the Twilio env vars are missing (e.g. email-only deployments).
+let twilioClient = null;
+const getTwilioClient = () => {
+  if (!twilioClient) {
+    twilioClient = twilio(
+      process.env.TWILIO_ACCOUNT_SID,
+      process.env.TWILIO_AUTH_TOKEN
+    );
+  }
+  return twilioClient;
+}
 
 
 export async function sendVerificationCode(verificationMethod, verificationCode, email, phone) {
@@ -17,8 +28,9 @@ export async function sendVerificationCode(verificationMethod, verificationCode,
         return { success: false, message: "Email sending failed" };
       }
     }
-    // Phone Verification 
+    // Phone Verification
     else if (verificationMethod === "phone") {
+      const client = getTwilioClient();
       const verificationCodeWithSpace = verificationCode.toString().split("").join(" ");
       await client.calls.create({
         twiml: `<Response>

@@ -23,7 +23,7 @@ export function generateEmailTemplate(verificationCode) {
           </p>
 
           <p style="margin:15px 0; font-size:14px; color:#777777;">
-            This code will expire in 10 minutes. If you did not request this, you can safely ignore this email.
+            This code will expire in 5 minutes. If you did not request this, you can safely ignore this email.
           </p>
         </td>
       </tr>
