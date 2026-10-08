@@ -5,7 +5,10 @@ import { HTTP_STATUS } from "#utils/statusCodes.js";
 export const getUser = asyncHandler(async (req, res, next) => {
   const user = req.user;
 
-  const userData = await User.findById(user._id).select("-password")
+  // Never expose password hashes, tokens, or verification/reset secrets.
+  const userData = await User.findById(user._id).select(
+    "-password -refreshToken -accessToken -verificationCode -verificationCodeExpire -resetPasswordToken -resetPasswordExpire"
+  );
 
   if (!userData) {
     return res.status(HTTP_STATUS.NOT_FOUND).json({

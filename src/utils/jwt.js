@@ -1,82 +1,66 @@
-import jwt from "jsonwebtoken"
-// import crypto from "crypto"
-import logger from "./logger.js"
-import { config } from "dotenv";
+import jwt from "jsonwebtoken";
+import logger from "./logger.js";
 
-config({ path: "./config.env" });
+// Read env lazily (at call time, not import time) so a missing variable
+// fails with a clear error instead of crashing the whole app on startup.
+const getSecrets = () => {
+  const accessSecret = process.env.JWT_ACCESS_SECRET;
+  const refreshSecret = process.env.JWT_REFRESH_SECRET;
 
-const JWT_SECRET_ACCESS = process.env.JWT_ACCESS_SECRET
-const JWT_SECRET_ACCESS_EXPIRE = process.env.JWT_ACCESS_SECRET_EXPIRES_IN
-const JWT_SECRET_REFRESH = process.env.JWT_REFRESH_SECRET
-const JWT_SECRET_REFRESH_EXPIRE = process.env.JWT_REFRESH_SECRET_EXPIRES_IN
+  if (!accessSecret || !refreshSecret) {
+    throw new Error("JWT secrets are not defined in environment variables");
+  }
 
-if (
-  !JWT_SECRET_ACCESS
-  ||
-  !JWT_SECRET_REFRESH
-) {
-  throw new Error("JWT secrets are not defined in environment variables")
-}
+  return {
+    accessSecret,
+    refreshSecret,
+    accessExpiresIn: process.env.JWT_ACCESS_SECRET_EXPIRES_IN || "15m",
+    refreshExpiresIn: process.env.JWT_REFRESH_SECRET_EXPIRES_IN || "7d",
+  };
+};
 
 // Access Token
 export const generateAccessToken = (user) => {
+  const { accessSecret, accessExpiresIn } = getSecrets();
   const payload = {
     userId: user._id,
     email: user.email,
-    type: "access"
-  }
+    type: "access",
+  };
 
-  return jwt.sign(payload, JWT_SECRET_ACCESS, { expiresIn: JWT_SECRET_ACCESS_EXPIRE })
-}
+  return jwt.sign(payload, accessSecret, { expiresIn: accessExpiresIn });
+};
 
 // Refresh Token
 export const generateRefreshToken = (user) => {
+  const { refreshSecret, refreshExpiresIn } = getSecrets();
   const payload = {
     userId: user._id,
     email: user.email,
-    type: "refresh"
-  }
+    type: "refresh",
+  };
 
-  return jwt.sign(payload, JWT_SECRET_REFRESH, { expiresIn: JWT_SECRET_REFRESH_EXPIRE })
-}
+  return jwt.sign(payload, refreshSecret, { expiresIn: refreshExpiresIn });
+};
 
 // Verify Access Token
-
 export const verifyAccessToken = (token) => {
   try {
-    return jwt.verify(token, JWT_SECRET_ACCESS)
+    const { accessSecret } = getSecrets();
+    return jwt.verify(token, accessSecret);
   } catch (error) {
-    logger.info("Token verification failed:", error)
-    return null
+    logger.info("Token verification failed:", error);
+    return null;
   }
-}
+};
 
 // Verify Refresh Token
 export const verifyRefreshToken = (token) => {
   try {
-    return jwt.verify(token, JWT_SECRET_REFRESH)
+    const { refreshSecret } = getSecrets();
+    return jwt.verify(token, refreshSecret);
   } catch (error) {
-    logger.error("Token verification failed:", error)
-    return null
+    logger.error("Token verification failed:", error);
+    return null;
   }
-}
-
-// Decode Token
-// export const decodeToken = (token) => {
-//   try {
-//     return jwt.decode(token, { complete: true })
-//   } catch (error) {
-//     logger.error("Token decoding failed:", error)
-//     return null
-//   }
-// }
-
-// Hash Token
-// export const hashToken = (token) => {
-//   try {
-//     return crypto.createHash("sha256").update(token).digest("hex")
-//   } catch (error) {
-//     logger.error("Token hashing failed:", error)
-//     return null
-//   }
-// }
+};

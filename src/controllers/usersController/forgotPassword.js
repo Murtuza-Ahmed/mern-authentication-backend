@@ -18,7 +18,14 @@ export const forgotPassword = asyncHandler(async (req, res, next) => {
 
   const resetToken = user.generateResetPasswordToken();
   await user.save({ validateBeforeSave: false });
-  const resetPasswordUrl = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`;
+  const frontendBase = (
+    process.env.FRONTEND_URL ||
+    process.env.FRONTEND_URLS?.split(",")[0] ||
+    ""
+  )
+    .trim()
+    .replace(/\/$/, "");
+  const resetPasswordUrl = `${frontendBase}/password/reset/${resetToken}`;
   const message = `Your Reset Password Token is:- \n\n ${resetPasswordUrl} \n\n If you have not requested this email then please ignore it.`;
 
   try {

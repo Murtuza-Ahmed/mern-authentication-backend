@@ -2,6 +2,7 @@ import { asyncHandler } from "#middlewares/asyncHandler.js";
 import mongoose from "mongoose";
 import ErrorHandler from "#utils/errorHandler.js";
 import { HTTP_STATUS } from "#utils/statusCodes.js";
+import { sanitizeUser } from "#utils/sanitizeUser.js";
 import {
   generateAccessToken,
   generateRefreshToken
@@ -48,10 +49,14 @@ export const login = asyncHandler(async (req, res, next) => {
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user)
 
-  user.accessToken = accessToken;
+  // Only the refresh token is persisted (used to detect logout).
+  // The access token is short-lived and never stored.
   user.refreshToken = refreshToken;
 
   await user.save({ validateModifiedOnly: true });
+
+  const safeUser = sanitizeUser(user);
+  safeUser.accessToken = accessToken; // in-memory only, for the client
 
   return res.status(HTTP_STATUS.OK).cookie("refreshToken", refreshToken, {
     httpOnly: true,
@@ -61,8 +66,7 @@ export const login = asyncHandler(async (req, res, next) => {
   }).json({
     success: true,
     message: "Login successful",
-    refreshToken,
     accessToken,
-    user
+    user: safeUser
   })
 })

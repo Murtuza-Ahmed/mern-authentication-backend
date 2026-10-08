@@ -18,10 +18,14 @@ export const logout = asyncHandler(async (req, res, next) => {
   user.refreshToken = null;
   await user.save({ validateModifiedOnly: true });
 
+  const isProduction = process.env.NODE_ENV === "production";
+
   return res.status(HTTP_STATUS.OK).clearCookie("refreshToken", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "Lax",
+    // Must match the options used when the cookie was set, otherwise the
+    // browser keeps the cookie (logout would silently fail in production).
+    secure: isProduction,
+    sameSite: isProduction ? "None" : "Lax",
   }).json({
     success: true,
     message: "Logout successful",

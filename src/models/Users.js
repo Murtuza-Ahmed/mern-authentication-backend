@@ -58,15 +58,16 @@ const UserSchema = new Schema({
 )
 
 // Indexes for better query performance
-UserSchema.index({ email: 1 })
-UserSchema.index({ createdAt: -1 })
+// (email already has an index from `unique: true`)
+UserSchema.index({ createdAt: -1 });
 
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
-    next();
-  };
-  this.password = await bcrypt.hash(this.password, 10)
-})
+    return next();
+  }
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
 
 UserSchema.methods.comparePassword = async function (enterPassword) {
   return await bcrypt.compare(enterPassword, this.password)
